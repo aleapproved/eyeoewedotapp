@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Privacy policy for Eye O Ewe, version 1.0." />
+    <title>Eye O Ewe — Privacy policy</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <a class="brand" href="../">
+          <span class="brand-mark" aria-hidden="true">👁️ O 🐑</span>
+          <span class="brand-name">Eye O Ewe</span>
+        </a>
+        <h1>Privacy policy</h1>
+        <p class="meta">Version 1.0 · Last updated 28 August 2026</p>
+        <p class="lede">
+          This page describes the data behaviour currently implemented in Eye O Ewe
+          mobile app and its Supabase backend.
+        </p>
+        <nav aria-label="Policy links">
+          <a href="../support/">Support</a>
+          <a href="../delete-account/">Account deletion</a>
+        </nav>
+      </header>
+
+      <div class="notice">
+        The service operator can read group and expense data. Eye O Ewe does not claim
+        end-to-end encryption.
+      </div>
+
+      <h2>What is stored</h2>
+      <p>
+        Passwordless sign-in uses your email address through Supabase Auth. After sign-in, the app
+        stores your chosen display name in your private profile. Your email is used for sign-in and
+        recovery and is not shown to group members.
+      </p>
+      <p>
+        When you use shared groups, the service stores group names, currency, participant names,
+        memberships, expenses, repayments, exact amounts, revisions, removals, corrections,
+        balances, audit history, operation records, and timestamps. A shared group may retain the
+        stable label <strong>Deleted user</strong> in its history after an account is deleted.
+      </p>
+      <p>
+        The app keeps an account-scoped SQLite cache on the device. It can contain the group and
+        ledger data above, safe actor display data, pending offline changes, retry state, conflict
+        snapshots, and sync status. The authentication session is stored separately using the
+        platform secure-storage facility.
+      </p>
+
+      <h2>Invitations and exports</h2>
+      <p>
+        Invitation codes are generated for a named participant slot. The server stores a digest of
+        the code rather than the raw code. A newly created code is kept only in the current invite
+        screen state and is not placed in the group cache or an export.
+      </p>
+      <p>
+        CSV and JSON exports are prepared only when you choose a share action. They are written to
+        the device cache temporarily and deleted after the share action completes or fails. The
+        exports do not contain email addresses, session data, one-time codes, invitation codes, raw
+        tokens, service keys, or database credentials.
+      </p>
+
+      <h2>Why the data is used</h2>
+      <p>
+        The data is used to sign you in, recover your account, show your profile, create and sync
+        shared groups, calculate balances, preserve correction history, deliver offline changes,
+        prepare exports you request, and perform the group and account deletion actions available in
+        the app.
+      </p>
+      <p>
+        Supabase provides the configured authentication, database, and realtime service. No
+        advertising, analytics, push-notification, contact-book, location, camera, microphone,
+        photo-library, bank, card, or payment-provider feature is implemented in this release.
+      </p>
+
+      <h2>Leaving, deletion, and retention</h2>
+      <p>
+        Shared group data is retained while the group exists. Leaving a group removes your active
+        membership and clears that group from the leaving device; it does not rewrite the shared
+        ledger. The owner can delete a group after confirmation, which removes its shared data for
+        all members after their next refresh.
+      </p>
+      <p>
+        Account deletion is available in the app under <strong>Account &amp; privacy</strong> when
+        you have an online authenticated session. An owner must first transfer ownership or delete
+        active groups. After the server operation succeeds, the private profile and authentication
+        record are removed, outstanding invitations created by the account are removed, memberships
+        are made inactive, and the shared history retains the <strong>Deleted user</strong> label.
+        The device then clears its local cache, profile, session, pending changes, and conflict
+        state.
+      </p>
+
+      <h2>Security and choices</h2>
+      <p>
+        Hosted app traffic is configured to use HTTPS. Access to shared rows is limited by the group
+        membership rules implemented in the backend, and session material is kept in platform secure
+        storage on native devices. Local development may use a local HTTP Supabase endpoint and is
+        not a production configuration.
+      </p>
+      <p>
+        You can stop using the app, sign out, leave groups, export groups, delete groups as an
+        owner, or delete your account from the available app controls. For help with the in-app
+        flow, see <a href="../support/">Support</a>.
+      </p>
+
+      <footer>
+        <p>
+          This is the versioned privacy material for Eye O Ewe. If the implemented data
+          behaviour changes, the store answers and this page must be reviewed together.
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>
