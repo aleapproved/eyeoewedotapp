@@ -8,8 +8,8 @@
     BlinkMacSystemFont,
     'Segoe UI',
     sans-serif;
-  background: #f7f8fa;
-  color: #172033;
+  background: #fbf6ee;
+  color: #20322f;
   font-synthesis: none;
   line-height: 1.6;
 }
@@ -29,14 +29,14 @@ main {
 }
 
 header {
-  border-bottom: 1px solid #e1e6ee;
+  border-bottom: 1px solid #e5dccf;
   margin-bottom: 32px;
   padding-bottom: 24px;
 }
 
 .brand {
   align-items: center;
-  color: #2f5bea;
+  color: #a94632;
   display: inline-flex;
   gap: 8px;
   font-size: 14px;
@@ -47,9 +47,9 @@ header {
 }
 
 .brand-mark {
-  font-size: 1.05rem;
-  letter-spacing: normal;
-  text-transform: none;
+  height: 40px;
+  object-fit: contain;
+  width: 80px;
 }
 
 .brand-name {
@@ -82,39 +82,39 @@ ul {
 }
 
 a {
-  color: #2446bb;
+  color: #21645f;
 }
 
 .lede {
-  color: #596579;
+  color: #64736c;
   font-size: 1.08rem;
   margin-bottom: 0;
 }
 
 .meta {
-  color: #596579;
+  color: #64736c;
   font-size: 0.92rem;
 }
 
 .card {
-  background: #fff;
-  border: 1px solid #e1e6ee;
+  background: #fffdf8;
+  border: 1px solid #e5dccf;
   border-radius: 16px;
   margin: 20px 0;
   padding: 20px;
 }
 
 .notice {
-  background: #eef2ff;
-  border: 1px solid #cbd5ff;
+  background: #dceee9;
+  border: 1px solid #b6d9d1;
   border-radius: 12px;
   margin: 20px 0;
   padding: 16px 18px;
 }
 
 footer {
-  border-top: 1px solid #e1e6ee;
-  color: #596579;
+  border-top: 1px solid #e5dccf;
+  color: #64736c;
   font-size: 0.92rem;
   margin-top: 48px;
   padding-top: 20px;

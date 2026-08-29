@@ -21,7 +21,7 @@ describe('C-11 product-only public pages', () => {
     expect(publicPages.root).toContain('<!doctype html>');
     expect(publicPages.root).toContain('<title>Eye O Ewe</title>');
     expect(publicPages.root).toContain('Eye O Ewe');
-    expect(publicPages.root).toContain('👁️ O 🐑');
+    expect(publicPages.root).toContain('alt="Eye O Ewe logo"');
     expect(publicPages.root).not.toMatch(/\bwhat\s+do\s+i\s+owe\s+you\b/i);
     for (const route of requiredRoutes) expect(publicPages.root).toContain(`href="${route}"`);
   });
@@ -31,7 +31,7 @@ describe('C-11 product-only public pages', () => {
       expect(page).toContain('<!doctype html>');
       expect(page).toContain('Version 1.0');
       expect(page).toContain('Eye O Ewe');
-      expect(page).toContain('👁️ O 🐑');
+      expect(page).toContain('alt="Eye O Ewe logo"');
       expect(page).not.toMatch(/<script\b/i);
       expect(page).not.toMatch(/\bwhat\s+do\s+i\s+owe\s+you\b/i);
     }

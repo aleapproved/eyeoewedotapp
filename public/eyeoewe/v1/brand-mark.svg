@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="256" viewBox="0 0 512 256">
+  <title>Eye O Ewe logo</title>
+  <g stroke="#20322f" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 128C54 73 122 63 180 128C122 193 54 183 18 128Z" fill="#fffdf8" stroke-width="13" />
+    <circle cx="97" cy="128" r="38" fill="#d85d43" stroke="none" />
+    <circle cx="97" cy="128" r="15" fill="#20322f" stroke="none" />
+    <circle cx="90" cy="120" r="6" fill="#fffdf8" stroke="none" />
+    <circle cx="224" cy="128" r="34" fill="#fbf6ee" stroke="#2d7f78" stroke-width="12" />
+    <path d="M300 157C276 142 282 106 309 98C315 72 341 57 366 68C382 42 421 46 431 75C458 68 484 88 482 115C505 123 511 153 490 168C482 174 472 176 463 176V189C463 207 449 220 431 220H337C315 220 300 202 300 182Z" fill="#fffdf8" stroke-width="13" />
+    <path d="M363 75C372 48 407 43 425 68C411 65 389 69 376 87Z" fill="#f4c95d" stroke="none" />
+    <path d="M354 112C354 84 374 67 401 67C428 67 448 84 448 112V157C448 184 428 201 401 201C374 201 354 184 354 157Z" fill="#20322f" stroke-width="10" />
+    <circle cx="385" cy="126" r="5" fill="#fffdf8" stroke="none" />
+    <circle cx="417" cy="126" r="5" fill="#fffdf8" stroke="none" />
+    <path d="M391 153Q401 162 411 153" fill="none" stroke="#fffdf8" stroke-width="5" />
+    <path d="M335 193V224M447 193V224" fill="none" stroke-width="11" />
+  </g>
+</svg>
