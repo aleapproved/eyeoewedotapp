@@ -150,9 +150,9 @@ body,
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 0.88fr) minmax(25rem, 1.12fr);
+  grid-template-columns: minmax(0, 0.95fr) minmax(25rem, 1.05fr);
   align-items: center;
-  gap: clamp(3rem, 6vw, 7rem);
+  gap: clamp(2.5rem, 5vw, 6rem);
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
@@ -197,6 +197,10 @@ h1 {
 
 .headline-line {
   display: block;
+}
+
+.headline-line:last-child {
+  white-space: nowrap;
 }
 
 h1 em {
