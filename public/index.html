@@ -3,35 +3,104 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f6f0e5" />
+    <meta name="color-scheme" content="light dark" />
     <meta
       name="description"
-      content="Eye O Ewe public privacy, support, and account-deletion information."
+      content="Eye O Ewe keeps shared expenses simple. Free forever, with optional one-off extras. End-to-end encrypted so your private data stays yours."
     />
-    <title>Eye O Ewe</title>
-    <link rel="stylesheet" href="/eyeoewe/v1/styles.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://eyeoewe.app/" />
+    <meta property="og:title" content="Eye O Ewe — Shared expenses, kept simple" />
+    <meta
+      property="og:description"
+      content="A calm, straightforward way to keep track of shared expenses. Free forever, with optional one-off extras. End-to-end encrypted so your private data stays yours."
+    />
+    <meta property="og:image" content="https://eyeoewe.app/eyeoewe-logo.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Eye O Ewe — Shared expenses, kept simple" />
+    <meta
+      name="twitter:description"
+      content="A calm, straightforward way to keep track of shared expenses. Free forever, with optional one-off extras. End-to-end encrypted so your private data stays yours."
+    />
+    <meta name="twitter:image" content="https://eyeoewe.app/eyeoewe-logo.png" />
+    <title>Eye O Ewe — Shared expenses, kept simple</title>
+    <link rel="canonical" href="https://eyeoewe.app/" />
+    <link rel="stylesheet" href="/styles.css?v=3" />
+    <script>
+      (() => {
+        const storageKey = "eyeoewe-theme";
+        let storedTheme = null;
+        try {
+          storedTheme = window.localStorage.getItem(storageKey);
+        } catch {}
+        const systemPrefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+        const theme =
+          storedTheme === "light" || storedTheme === "dark"
+            ? storedTheme
+            : systemPrefersDark
+              ? "dark"
+              : "light";
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
   </head>
   <body>
-    <main>
-      <header>
-        <p class="brand">
-          <img class="brand-mark" src="/eyeoewe/v1/brand-mark.svg" alt="Eye O Ewe logo" />
-          <span class="brand-name">Eye O Ewe</span>
-        </p>
-        <h1>Eye O Ewe</h1>
-        <p class="lede">Public privacy, support, and account-deletion information.</p>
-        <nav aria-label="Eye O Ewe information">
-          <a href="/eyeoewe/v1/privacy/">Privacy policy</a>
-          <a href="/eyeoewe/v1/support/">Support</a>
-          <a href="/eyeoewe/v1/delete-account/">Account deletion</a>
-        </nav>
+    <main class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="Eye O Ewe home">
+          <img class="brand-icon" src="/eyeoewe-logo.png" alt="" />
+          <span>Eye O Ewe</span>
+        </a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
+          <span class="theme-toggle-icon" data-theme-icon aria-hidden="true">☾</span>
+          <span class="theme-toggle-label" data-theme-label>Dark mode</span>
+        </button>
       </header>
-      <p>
-        Choose a versioned page for the information you need. These pages describe the implemented
-        Eye O Ewe release and do not collect account or deletion requests.
-      </p>
-      <footer>
-        <p>Eye O Ewe · Version 1.0</p>
-      </footer>
+
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span aria-hidden="true"></span> Shared expenses</p>
+          <h1 id="hero-title">
+            <span class="headline-line">Shared</span>
+            <span class="headline-line">expenses,</span>
+            <span class="headline-line"><em>kept simple.</em></span>
+          </h1>
+          <p class="lede">
+            A calm, straightforward way to keep track of what you spend together, who owes what, and what to do next.
+          </p>
+
+          <p class="status" aria-label="Launch status">
+            <span class="status-dot" aria-hidden="true"></span>
+            Coming soon
+          </p>
+        </div>
+
+        <div class="hero-art">
+          <div class="icon-frame">
+            <img
+              src="/eyeoewe-logo.png"
+              alt="A cheerful sheep looking through a telescope at a gold coin"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="principles" aria-label="Eye O Ewe principles">
+        <article class="principle">
+          <h2>Simple by default</h2>
+          <p>Only the essentials, clearly arranged.</p>
+        </article>
+        <article class="principle">
+          <h2>Free forever</h2>
+          <p>The core app is free forever. Optional one-off unlocks add extra features. There is no subscription.</p>
+        </article>
+        <article class="principle">
+          <h2>Your data is yours</h2>
+          <p>Your data is end-to-end encrypted. Eye O Ewe never sees your private data.</p>
+        </article>
+      </section>
     </main>
+    <script src="/theme-toggle.js?v=3" defer></script>
   </body>
 </html>

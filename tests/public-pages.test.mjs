@@ -1,43 +1,64 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { resolve } from 'node:path';
 
 const read = (relativePath) => readFileSync(resolve(process.cwd(), relativePath), 'utf8');
-const publicPages = {
-  root: read('public/index.html'),
-  version: read('public/eyeoewe/v1/index.html'),
-  privacy: read('public/eyeoewe/v1/privacy/index.html'),
-  support: read('public/eyeoewe/v1/support/index.html'),
-  deletion: read('public/eyeoewe/v1/delete-account/index.html'),
-};
-const requiredRoutes = [
-  '/eyeoewe/v1/privacy/',
-  '/eyeoewe/v1/support/',
-  '/eyeoewe/v1/delete-account/',
-];
+const root = read('public/index.html');
+const styles = read('public/styles.css');
+const redirects = read('public/_redirects');
+const themeScript = read('public/theme-toggle.js');
 const deploymentHelper = read('scripts/deploy-public-pages.mjs');
 const deploymentDocs = read('docs/public-pages-deploy.md');
 
-test('publishes a branded root entry that links every required route', () => {
-  assert.match(publicPages.root, /<!doctype html>/);
-  assert.match(publicPages.root, /<title>Eye O Ewe<\/title>/);
-  assert.match(publicPages.root, /Eye O Ewe/);
-  assert.match(publicPages.root, /alt="Eye O Ewe logo"/);
-  assert.doesNotMatch(publicPages.root, /\bwhat\s+do\s+i\s+owe\s+you\b/i);
-  for (const route of requiredRoutes)
-    assert.ok(publicPages.root.includes('href="' + route + '"'));
+test('publishes one branded, product-only placeholder page', () => {
+  assert.match(root, /<!doctype html>/);
+  assert.match(root, /<title>Eye O Ewe — Shared expenses, kept simple<\/title>/);
+  assert.match(root, /Eye O Ewe/);
+  assert.match(root, /class="headline-line">Shared<\/span>/);
+  assert.match(root, /class="headline-line">expenses,[\s\S]*kept simple\./);
+  assert.match(root, /src="\/eyeoewe-logo\.png"/);
+  assert.match(root, /Simple by default/);
+  assert.match(root, /Free forever/);
+  assert.match(root, /Optional one-off unlocks/);
+  assert.match(root, /End-to-end encrypted/);
+  assert.match(root, /Eye O Ewe never sees your private data/);
+  assert.equal((root.match(/Coming soon/g) ?? []).length, 1);
+  assert.doesNotMatch(root, /<footer\b/);
+  assert.match(root, /data-theme-toggle/);
+  assert.match(root, /theme-toggle\.js/);
+  assert.doesNotMatch(root, /\bwhat\s+do\s+i\s+owe\s+you\b/i);
+  assert.doesNotMatch(root, /privacy|support|delete-account/i);
+  assert.doesNotMatch(
+    root,
+    /Less spreadsheet|Something good is on the way|Keep the big picture|feature maze|attention traps|We['’]re building towards/i,
+  );
+  assert.ok(existsSync(resolve(process.cwd(), 'public/eyeoewe-logo.png')));
+  assert.ok(existsSync(resolve(process.cwd(), 'public/styles.css')));
+  assert.ok(existsSync(resolve(process.cwd(), 'public/theme-toggle.js')));
+  assert.match(redirects, /^\/eyeoewe\/v1\/\* \/ 301$/m);
+  assert.ok(!existsSync(resolve(process.cwd(), 'public/eyeoewe')));
 });
 
-test('keeps every route source branded, static, and free of the retired name', () => {
-  for (const page of Object.values(publicPages)) {
-    assert.match(page, /<!doctype html>/);
-    assert.match(page, /Version 1\.0/);
-    assert.match(page, /Eye O Ewe/);
-    assert.match(page, /alt="Eye O Ewe logo"/);
-    assert.doesNotMatch(page, /<script\b/i);
-    assert.doesNotMatch(page, /\bwhat\s+do\s+i\s+owe\s+you\b/i);
-  }
+test('keeps the placeholder responsive and respectful of reduced motion', () => {
+  assert.match(styles, /@media \(max-width: 960px\)/);
+  assert.match(styles, /@media \(max-width: 520px\)/);
+  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
+});
+
+test('provides an accessible persistent light and dark mode switch', () => {
+  assert.match(root, /window\.localStorage\.getItem\(storageKey\)/);
+  assert.match(themeScript, /window\.localStorage\.setItem/);
+  assert.match(themeScript, /addEventListener\("click"/);
+  assert.match(themeScript, /aria-pressed/);
+  assert.match(themeScript, /Switch to light mode/);
+  assert.match(themeScript, /Switch to dark mode/);
+  assert.match(themeScript, /meta\[name="theme-color"\]/);
+  assert.match(styles, /:root\[data-theme="dark"\]/);
+  assert.match(styles, /color-scheme: dark/);
+  assert.doesNotMatch(root, /sunwash/);
+  assert.doesNotMatch(styles, /\.sunwash/);
+  assert.doesNotMatch(styles, /\.site-footer/);
 });
 
 test('deploys only the product public source', () => {
