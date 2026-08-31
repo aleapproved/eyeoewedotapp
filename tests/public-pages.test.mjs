@@ -56,7 +56,8 @@ test('provides an accessible persistent light and dark mode switch', () => {
   assert.match(themeScript, /meta\[name="theme-color"\]/);
   assert.match(styles, /:root\[data-theme="dark"\]/);
   assert.match(styles, /color-scheme: dark/);
-  assert.doesNotMatch(styles, /\.sunwash::after/);
+  assert.doesNotMatch(root, /sunwash/);
+  assert.doesNotMatch(styles, /\.sunwash/);
   assert.doesNotMatch(styles, /\.site-footer/);
 });
 
