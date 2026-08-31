@@ -15,17 +15,24 @@ test('publishes one branded, product-only placeholder page', () => {
   assert.match(root, /<!doctype html>/);
   assert.match(root, /<title>Eye O Ewe — Shared expenses, kept simple<\/title>/);
   assert.match(root, /Eye O Ewe/);
-  assert.match(root, /Keep it<br \/><em>simple\.<\/em>/);
+  assert.match(root, /class="headline-line">Shared<\/span>/);
+  assert.match(root, /class="headline-line">expenses,[\s\S]*kept simple\./);
   assert.match(root, /src="\/eyeoewe-logo\.png"/);
   assert.match(root, /Simple by default/);
   assert.match(root, /Free forever/);
   assert.match(root, /Optional one-off unlocks/);
-  assert.match(root, /end-to-end encryption/);
+  assert.match(root, /End-to-end encrypted/);
+  assert.match(root, /Eye O Ewe never sees your private data/);
+  assert.equal((root.match(/Coming soon/g) ?? []).length, 1);
+  assert.doesNotMatch(root, /<footer\b/);
   assert.match(root, /data-theme-toggle/);
   assert.match(root, /theme-toggle\.js/);
   assert.doesNotMatch(root, /\bwhat\s+do\s+i\s+owe\s+you\b/i);
   assert.doesNotMatch(root, /privacy|support|delete-account/i);
-  assert.doesNotMatch(root, /Less spreadsheet|Something good is on the way|Keep the big picture/i);
+  assert.doesNotMatch(
+    root,
+    /Less spreadsheet|Something good is on the way|Keep the big picture|feature maze|attention traps|We['’]re building towards/i,
+  );
   assert.ok(existsSync(resolve(process.cwd(), 'public/eyeoewe-logo.png')));
   assert.ok(existsSync(resolve(process.cwd(), 'public/styles.css')));
   assert.ok(existsSync(resolve(process.cwd(), 'public/theme-toggle.js')));
@@ -49,6 +56,8 @@ test('provides an accessible persistent light and dark mode switch', () => {
   assert.match(themeScript, /meta\[name="theme-color"\]/);
   assert.match(styles, /:root\[data-theme="dark"\]/);
   assert.match(styles, /color-scheme: dark/);
+  assert.doesNotMatch(styles, /\.sunwash::after/);
+  assert.doesNotMatch(styles, /\.site-footer/);
 });
 
 test('deploys only the product public source', () => {

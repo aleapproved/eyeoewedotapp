@@ -54,33 +54,6 @@ body {
   color: var(--ink);
 }
 
-body::before,
-body::after {
-  position: fixed;
-  z-index: -1;
-  display: block;
-  width: 30rem;
-  height: 30rem;
-  border-radius: 50%;
-  content: "";
-  filter: blur(2px);
-  pointer-events: none;
-}
-
-body::before {
-  top: -19rem;
-  right: -8rem;
-  background: var(--yellow);
-  opacity: 0.2;
-}
-
-body::after {
-  bottom: -23rem;
-  left: -13rem;
-  background: var(--mint);
-  opacity: 0.23;
-}
-
 button {
   font: inherit;
 }
@@ -93,8 +66,7 @@ body,
 .brand,
 .theme-toggle,
 .principle,
-.icon-frame,
-.site-footer {
+.icon-frame {
   transition:
     background-color 180ms ease,
     border-color 180ms ease,
@@ -108,11 +80,10 @@ body,
   width: min(100%, 1440px);
   min-height: 100svh;
   margin: 0 auto;
-  padding: 2rem clamp(1.35rem, 5vw, 5.5rem) 1.6rem;
+  padding: 2rem clamp(1.35rem, 5vw, 5.5rem) 3rem;
 }
 
-.site-header,
-.site-footer {
+.site-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -179,27 +150,26 @@ body,
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(26rem, 1.05fr);
+  grid-template-columns: minmax(0, 0.88fr) minmax(25rem, 1.12fr);
   align-items: center;
-  flex: 1;
-  gap: clamp(2.5rem, 7vw, 8rem);
+  gap: clamp(3rem, 6vw, 7rem);
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: clamp(3rem, 7vh, 7rem) 0 clamp(2rem, 5vh, 4rem);
+  padding: clamp(5rem, 12vh, 9rem) 0 clamp(4rem, 8vh, 7rem);
 }
 
 .hero-copy {
   position: relative;
   z-index: 1;
-  max-width: 42rem;
+  max-width: 35rem;
 }
 
 .eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  margin: 0 0 1.65rem;
+  margin: 0 0 1.5rem;
   color: var(--muted);
   font-size: 0.68rem;
   font-weight: 850;
@@ -216,13 +186,17 @@ body,
 }
 
 h1 {
-  max-width: 8ch;
+  max-width: none;
   margin: 0;
   color: var(--ink);
-  font-size: clamp(4.25rem, 8.5vw, 8.6rem);
+  font-size: clamp(4.5rem, 8vw, 8.2rem);
   font-weight: 800;
   letter-spacing: -0.095em;
   line-height: 0.83;
+}
+
+.headline-line {
+  display: block;
 }
 
 h1 em {
@@ -231,8 +205,8 @@ h1 em {
 }
 
 .lede {
-  max-width: 29rem;
-  margin: clamp(2rem, 4vw, 3.5rem) 0 0;
+  max-width: 28rem;
+  margin: 2.35rem 0 0;
   color: var(--muted);
   font-size: clamp(1.05rem, 1.5vw, 1.35rem);
   letter-spacing: -0.02em;
@@ -242,44 +216,38 @@ h1 em {
 .principles {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.65rem;
-  margin-top: clamp(2rem, 4vw, 3rem);
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 
 .principle {
-  min-height: 9.5rem;
-  padding: 1rem 0.9rem 1.1rem;
-  border: 1px solid var(--line);
-  border-top: 3px solid var(--ink);
-  border-radius: 0.9rem;
-  background: var(--surface);
+  min-height: 0;
+  padding: 1.65rem clamp(1rem, 2.2vw, 2rem) 1.8rem 0;
+}
+
+.principle + .principle {
+  border-left: 1px solid var(--line);
+  padding-left: clamp(1rem, 2.2vw, 2rem);
 }
 
 .principle h2 {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.7rem;
   color: var(--ink);
-  font-size: 0.76rem;
+  font-size: 1rem;
   font-weight: 850;
-  letter-spacing: 0.04em;
+  letter-spacing: -0.025em;
   line-height: 1.1;
-  text-transform: uppercase;
 }
 
 .principle p {
+  max-width: 25rem;
   margin: 0;
   color: var(--soft);
-  font-size: 0.82rem;
-  line-height: 1.35;
-}
-
-.principle--ownership {
-  border-color: var(--ink);
-  background: var(--ink);
-}
-
-.principle--ownership h2,
-.principle--ownership p {
-  color: var(--bg);
+  font-size: 0.96rem;
+  line-height: 1.4;
 }
 
 .status {
@@ -305,29 +273,17 @@ h1 em {
   position: relative;
   display: grid;
   place-items: center;
-  min-height: min(54vw, 38rem);
+  min-height: min(48vw, 38rem);
 }
 
 .sunwash {
   position: absolute;
-  width: min(75%, 32rem);
+  width: min(78%, 32rem);
   aspect-ratio: 1;
-  border-radius: 45% 55% 51% 49% / 48% 43% 57% 52%;
+  border-radius: 3.5rem;
   background: var(--yellow);
   opacity: 0.95;
-  transform: rotate(-17deg) translate(5%, 2%);
-}
-
-.sunwash::after {
-  position: absolute;
-  right: -1.6rem;
-  bottom: 7%;
-  width: 5.5rem;
-  height: 5.5rem;
-  border: 0.9rem solid var(--blue);
-  border-radius: 50%;
-  content: "";
-  opacity: 0.95;
+  transform: rotate(-8deg) translate(-2%, 1%);
 }
 
 .icon-frame {
@@ -338,8 +294,8 @@ h1 em {
   border: 2px solid var(--ink);
   border-radius: clamp(1.7rem, 4vw, 3rem);
   background: var(--surface);
-  box-shadow: 0.65rem 0.75rem 0 var(--shadow);
-  transform: rotate(4deg);
+  box-shadow: 0.55rem 0.65rem 0 var(--shadow);
+  transform: rotate(2.5deg);
 }
 
 .icon-frame img {
@@ -350,20 +306,6 @@ h1 em {
   object-fit: cover;
 }
 
-.site-footer {
-  position: relative;
-  z-index: 2;
-  border-top: 1px solid var(--line);
-  padding-top: 1rem;
-  color: var(--soft);
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-}
-
-.site-footer p {
-  margin: 0;
-}
-
 @media (max-width: 960px) {
   .site-shell {
     padding-top: 1.35rem;
@@ -371,13 +313,12 @@ h1 em {
 
   .hero {
     grid-template-columns: 1fr;
-    gap: 3.5rem;
+    gap: 4rem;
     padding-top: clamp(4rem, 10vh, 7rem);
   }
 
   h1 {
-    max-width: 10ch;
-    font-size: clamp(4.2rem, 15vw, 7.5rem);
+    font-size: clamp(4.6rem, 14vw, 8rem);
   }
 
   .hero-art {
@@ -386,6 +327,20 @@ h1 em {
 
   .icon-frame {
     width: min(86%, 29rem);
+  }
+
+  .principles {
+    grid-template-columns: 1fr;
+  }
+
+  .principle {
+    padding: 1.35rem 0 1.5rem;
+  }
+
+  .principle + .principle {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+    padding-left: 0;
   }
 }
 
@@ -414,19 +369,11 @@ h1 em {
   }
 
   h1 {
-    font-size: clamp(4rem, 18vw, 6.5rem);
+    font-size: clamp(4rem, 18vw, 6.6rem);
   }
 
   .lede {
     font-size: 1.08rem;
-  }
-
-  .principles {
-    grid-template-columns: 1fr;
-  }
-
-  .principle {
-    min-height: 0;
   }
 
   .hero-art {
@@ -439,9 +386,6 @@ h1 em {
     box-shadow: 0.45rem 0.55rem 0 var(--shadow);
   }
 
-  .site-footer {
-    margin-top: 2rem;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
