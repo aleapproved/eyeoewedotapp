@@ -9,7 +9,8 @@ const styles = read('public/styles.css');
 const redirects = read('public/_redirects');
 const themeScript = read('public/theme-toggle.js');
 const deploymentHelper = read('scripts/deploy-public-pages.mjs');
-const deploymentDocs = read('docs/public-pages-deploy.md');
+const readme = read('README.md');
+const agents = read('AGENTS.md');
 
 test('publishes one branded, product-only placeholder page', () => {
   assert.match(root, /<!doctype html>/);
@@ -75,12 +76,9 @@ test('deploys only the product public source', () => {
     /Preview: --branch <preview-name> must use a branch other than main\./,
   );
   assert.doesNotMatch(deploymentHelper, /--site-root|alessandrogillies/);
-  assert.match(deploymentDocs, /product-only/);
-  assert.ok(deploymentDocs.includes('--production'));
-  assert.ok(deploymentDocs.includes('--branch <preview-name>'));
-  assert.ok(deploymentDocs.includes('--branch main'));
-  assert.ok(deploymentDocs.includes('https://eyeoewe.app/'));
-  assert.doesNotMatch(deploymentDocs, /--site-root|alessandrogillies/);
+  assert.match(readme, /complete deployable site is under `public\/`/);
+  assert.match(readme, /The public route is:/);
+  assert.ok(!existsSync(resolve(process.cwd(), 'docs')));
 });
 
 test('targets main only for production and keeps previews on named branches', () => {
@@ -97,7 +95,18 @@ test('targets main only for production and keeps previews on named branches', ()
     deploymentHelper,
     /Preview: --branch <preview-name> must use a branch other than main\./,
   );
-  assert.ok(deploymentDocs.includes('--production'));
-  assert.ok(deploymentDocs.includes('--branch <preview-name>'));
-  assert.ok(deploymentDocs.includes('--branch main'));
+  assert.ok(readme.includes('npm run deploy:production'));
+  assert.ok(readme.includes('npm run deploy:preview'));
+  assert.ok(readme.includes('--branch <named-preview-branch>'));
+  assert.ok(readme.includes('always sends `--branch main`'));
+});
+
+test('keeps remote actions behind explicit approval gates', () => {
+  assert.match(agents, /An implementation request authorises local work only/);
+  assert.match(agents, /pushing a branch or creating or updating a pull request/);
+  assert.match(agents, /merging does not authorise production deployment/);
+  assert.match(agents, /deployment does not\s+authorise cleanup/);
+  assert.match(readme, /following actions require separate, explicit owner approval/);
+  assert.match(readme, /Publish the reviewed `main` commit to Cloudflare Pages/);
+  assert.match(readme, /Cleanup is a separate approved action/);
 });
