@@ -1,25 +1,95 @@
 # Eye O Ewe website
 
-This repository contains the single-page public placeholder for Eye O Ewe. The
-mobile app remains in its existing app repository.
+This repository contains the single-page public website for Eye O Ewe. The
+mobile app remains in its separate repository.
 
-## Website source
+## Source
 
-The complete deployable site is under public/. It has no build step,
+The complete deployable site is under `public/`. It has no build step,
 analytics, tracking, account data, or server-side code.
 
-The published route is:
+The public route is:
 
-- https://eyeoewe.app/
+- `https://eyeoewe.app/`
 
-## Local check
+## Local verification
 
-From the repository folder, run:
+From the repository root:
 
-    npm test
+```bash
+npm ci
+npm test
+git diff --check
+git status --short
+```
 
-This checks the page, branding, static-only boundary, and deployment target
-rules.
+`npm test` checks the page, branding, static-only boundary, and deployment
+target rules. For visual changes, serve `public/` with a local static-file
+server and inspect the rendered page at mobile and desktop sizes.
 
-For a local browser preview, serve public/ with any static-file server. For
-Cloudflare Pages deployment, follow docs/public-pages-deploy.md.
+Do not treat local checks or local visual review as evidence of a GitHub merge,
+Cloudflare deployment, or live response.
+
+## Delivery workflow
+
+Work on a local branch and review the complete diff before asking to push. The
+following actions require separate, explicit owner approval:
+
+1. Push the branch and create or update a pull request.
+2. Merge the reviewed pull request into `main`.
+3. Publish the reviewed `main` commit to Cloudflare Pages.
+4. Remove the merged branch, its worktree, or any preview deployment.
+
+Keep the local checkout and remote state separate in status reports. Preserve
+untracked user files and unrelated branches throughout the workflow.
+
+## Cloudflare Pages
+
+The exact Pages project must be confirmed in the owner’s Cloudflare account
+before any deployment. Do not guess the project name. The owner must already
+be authenticated with Wrangler.
+
+Check the account and available Pages projects when release work has been
+authorised:
+
+```bash
+npx --yes wrangler@4.127.1 whoami
+npx --yes wrangler@4.127.1 pages project list --json
+```
+
+### Preview
+
+A preview requires explicit owner approval and a named branch other than
+`main`. It cannot publish the production branch:
+
+```bash
+npm run deploy:preview -- \
+  --project-name <confirmed-eyeoewe-pages-project> \
+  --branch <named-preview-branch>
+```
+
+### Production
+
+Production requires explicit owner approval after the reviewed change has been
+merged to `main`:
+
+```bash
+npm run deploy:production -- \
+  --project-name <confirmed-eyeoewe-pages-project>
+```
+
+The deployment helper uploads only `public/` and always sends `--branch main`
+for production. It rejects `--branch main` when a preview is requested.
+
+After publishing, verify the exact Pages deployment, its branch and commit,
+and the root URL response. Record the route and status only. Do not put account
+identifiers, access tokens, or other sensitive Wrangler output in GitHub or
+repository files.
+
+## Final tidy state
+
+Cleanup is a separate approved action. After a successful, verified
+publication, remove only the merged feature branch, its dedicated worktree,
+and specifically authorised preview deployments. Leave the default checkout
+on `main`, aligned with `origin/main`, and preserve unrelated changes and
+untracked user files.
