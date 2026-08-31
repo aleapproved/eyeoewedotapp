@@ -3,34 +3,69 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f6f0e5" />
     <meta
       name="description"
-      content="Eye O Ewe public privacy, support, and account-deletion information."
+      content="Eye O Ewe is a calmer way to keep track of shared costs, balances, and repayments. Coming soon."
     />
-    <title>Eye O Ewe</title>
-    <link rel="stylesheet" href="/eyeoewe/v1/styles.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://eyeoewe.app/" />
+    <meta property="og:title" content="Eye O Ewe — See who owes what" />
+    <meta
+      property="og:description"
+      content="A calmer way to keep track of shared costs, balances, and repayments. Coming soon."
+    />
+    <meta property="og:image" content="https://eyeoewe.app/eyeoewe-logo.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Eye O Ewe — See who owes what" />
+    <meta
+      name="twitter:description"
+      content="A calmer way to keep track of shared costs, balances, and repayments. Coming soon."
+    />
+    <meta name="twitter:image" content="https://eyeoewe.app/eyeoewe-logo.png" />
+    <title>Eye O Ewe — See who owes what</title>
+    <link rel="canonical" href="https://eyeoewe.app/" />
+    <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <main>
-      <header>
-        <p class="brand">
-          <img class="brand-mark" src="/eyeoewe/v1/brand-mark.svg" alt="Eye O Ewe logo" />
-          <span class="brand-name">Eye O Ewe</span>
-        </p>
-        <h1>Eye O Ewe</h1>
-        <p class="lede">Public privacy, support, and account-deletion information.</p>
-        <nav aria-label="Eye O Ewe information">
-          <a href="/eyeoewe/v1/privacy/">Privacy policy</a>
-          <a href="/eyeoewe/v1/support/">Support</a>
-          <a href="/eyeoewe/v1/delete-account/">Account deletion</a>
-        </nav>
+    <main class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="Eye O Ewe home">
+          <img class="brand-icon" src="/eyeoewe-logo.png" alt="" />
+          <span>Eye O Ewe</span>
+        </a>
+        <p class="header-note">Coming soon</p>
       </header>
-      <p>
-        Choose a versioned page for the information you need. These pages describe the implemented
-        Eye O Ewe release and do not collect account or deletion requests.
-      </p>
-      <footer>
-        <p>Eye O Ewe · Version 1.0</p>
+
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span aria-hidden="true"></span> Shared expenses, made clear</p>
+          <h1 id="hero-title">See who<br /><em>owes what.</em></h1>
+          <p class="lede">
+            A calmer way to keep track of shared costs, balances, and repayments with your people.
+          </p>
+          <p class="launch-copy">Something good is on the way.</p>
+          <span class="status" aria-label="Eye O Ewe is coming soon">
+            <span class="status-dot" aria-hidden="true"></span>
+            Eye O Ewe is coming soon
+          </span>
+        </div>
+
+        <div class="hero-art" aria-label="Eye O Ewe app icon">
+          <div class="sunwash" aria-hidden="true"></div>
+          <div class="icon-frame">
+            <img
+              src="/eyeoewe-logo.png"
+              alt="A cheerful sheep looking through a telescope at a gold coin"
+            />
+          </div>
+          <p class="art-note"><span>01</span> Keep the big picture in view</p>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <p>Less spreadsheet. More getting on with it.</p>
+        <p aria-hidden="true">✳</p>
       </footer>
     </main>
   </body>

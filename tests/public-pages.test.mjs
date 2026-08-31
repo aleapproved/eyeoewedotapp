@@ -1,43 +1,35 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { resolve } from 'node:path';
 
 const read = (relativePath) => readFileSync(resolve(process.cwd(), relativePath), 'utf8');
-const publicPages = {
-  root: read('public/index.html'),
-  version: read('public/eyeoewe/v1/index.html'),
-  privacy: read('public/eyeoewe/v1/privacy/index.html'),
-  support: read('public/eyeoewe/v1/support/index.html'),
-  deletion: read('public/eyeoewe/v1/delete-account/index.html'),
-};
-const requiredRoutes = [
-  '/eyeoewe/v1/privacy/',
-  '/eyeoewe/v1/support/',
-  '/eyeoewe/v1/delete-account/',
-];
+const root = read('public/index.html');
+const styles = read('public/styles.css');
+const redirects = read('public/_redirects');
 const deploymentHelper = read('scripts/deploy-public-pages.mjs');
 const deploymentDocs = read('docs/public-pages-deploy.md');
 
-test('publishes a branded root entry that links every required route', () => {
-  assert.match(publicPages.root, /<!doctype html>/);
-  assert.match(publicPages.root, /<title>Eye O Ewe<\/title>/);
-  assert.match(publicPages.root, /Eye O Ewe/);
-  assert.match(publicPages.root, /alt="Eye O Ewe logo"/);
-  assert.doesNotMatch(publicPages.root, /\bwhat\s+do\s+i\s+owe\s+you\b/i);
-  for (const route of requiredRoutes)
-    assert.ok(publicPages.root.includes('href="' + route + '"'));
+test('publishes one branded, product-only placeholder page', () => {
+  assert.match(root, /<!doctype html>/);
+  assert.match(root, /<title>Eye O Ewe — See who owes what<\/title>/);
+  assert.match(root, /Eye O Ewe/);
+  assert.match(root, /See who<br \/><em>owes what\.<\/em>/);
+  assert.match(root, /src="\/eyeoewe-logo\.png"/);
+  assert.match(root, /Eye O Ewe is coming soon/);
+  assert.doesNotMatch(root, /\bwhat\s+do\s+i\s+owe\s+you\b/i);
+  assert.doesNotMatch(root, /privacy|support|delete-account/i);
+  assert.doesNotMatch(root, /<script\b/i);
+  assert.ok(existsSync(resolve(process.cwd(), 'public/eyeoewe-logo.png')));
+  assert.ok(existsSync(resolve(process.cwd(), 'public/styles.css')));
+  assert.match(redirects, /^\/eyeoewe\/v1\/\* \/ 301$/m);
+  assert.ok(!existsSync(resolve(process.cwd(), 'public/eyeoewe')));
 });
 
-test('keeps every route source branded, static, and free of the retired name', () => {
-  for (const page of Object.values(publicPages)) {
-    assert.match(page, /<!doctype html>/);
-    assert.match(page, /Version 1\.0/);
-    assert.match(page, /Eye O Ewe/);
-    assert.match(page, /alt="Eye O Ewe logo"/);
-    assert.doesNotMatch(page, /<script\b/i);
-    assert.doesNotMatch(page, /\bwhat\s+do\s+i\s+owe\s+you\b/i);
-  }
+test('keeps the placeholder responsive and respectful of reduced motion', () => {
+  assert.match(styles, /@media \(max-width: 850px\)/);
+  assert.match(styles, /@media \(max-width: 520px\)/);
+  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
 });
 
 test('deploys only the product public source', () => {

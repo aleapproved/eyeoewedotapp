@@ -1,22 +1,20 @@
-# Public policy-page deployment
+# Public placeholder deployment
 
 The product-only static publish source is `public/`. Its root entry point is
-`public/index.html`, and the versioned source for the privacy, support, and
-account-deletion pages is under `public/eyeoewe/v1/`. The intended public URLs
-are:
+`public/index.html`, and the intended public URL is:
 
 - `https://eyeoewe.app/`
-- `https://eyeoewe.app/eyeoewe/v1/privacy/`
-- `https://eyeoewe.app/eyeoewe/v1/support/`
-- `https://eyeoewe.app/eyeoewe/v1/delete-account/`
 
 ## Product-only Pages boundary
 
 The product Pages project must use only this repository’s `public/` directory
 as its upload source. It is a complete static publish directory with no build
 step, framework, analytics, tracking, account data, or server-side code. The
-root page links to the three versioned routes above. Do not copy or upload a
+root page is the complete placeholder experience. Do not copy or upload a
 different site repository.
+
+The `_redirects` file sends the retired `/eyeoewe/v1/` path tree to `/`, so an
+old link cannot reveal an earlier page.
 
 The deployment helper makes a temporary filtered copy of `public/`, deploys
 that product-only directory with Wrangler, and removes the temporary
@@ -57,22 +55,13 @@ deployment:
 ```bash
 node scripts/deploy-public-pages.mjs \
   --project-name <confirmed-eyeoewe-pages-project> \
-  --branch c11-policy-preview
+  --branch placeholder-preview
 ```
 
 Use a non-production branch name for every preview. The helper rejects
 `--branch main`; use `--production` when the confirmed
 production branch is intended.
 
-After production deployment, check the root and each versioned URL with a
-private browser window and record only status/route results. Do not paste
-Cloudflare output containing account identifiers or tokens into Git or
-evidence.
-
-## Current C-11 boundary
-
-No production deployment is part of this source correction. For a future
-production deployment, the orchestrator must authenticate Wrangler, confirm
-the exact product Pages project serving `eyeoewe.app`, run the production
-command above, and verify the root plus all three versioned routes. This does
-not require copying another site or changing DNS, MX, mail, or email settings.
+After production deployment, check the root URL with a private browser window
+and record only the status/route result. Do not paste Cloudflare output
+containing account identifiers or tokens into Git or evidence.

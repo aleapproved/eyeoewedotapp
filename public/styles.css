@@ -1,0 +1,386 @@
+:root {
+  color-scheme: light;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+  background: #f6f0e5;
+  color: #121d2a;
+  font-synthesis: none;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: #f6f0e5;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+body::before,
+body::after {
+  position: fixed;
+  z-index: -1;
+  display: block;
+  width: 30rem;
+  height: 30rem;
+  border-radius: 50%;
+  content: "";
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+body::before {
+  top: -19rem;
+  right: -8rem;
+  background: #f6c235;
+  opacity: 0.28;
+}
+
+body::after {
+  bottom: -23rem;
+  left: -13rem;
+  background: #91d6c1;
+  opacity: 0.3;
+}
+
+a {
+  color: inherit;
+}
+
+.site-shell {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 1440px);
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: 2rem clamp(1.35rem, 5vw, 5.5rem) 1.6rem;
+}
+
+.site-header,
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-header {
+  position: relative;
+  z-index: 2;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: #121d2a;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  text-decoration: none;
+}
+
+.brand-icon {
+  display: block;
+  width: 2.7rem;
+  aspect-ratio: 1;
+  border: 2px solid #121d2a;
+  border-radius: 25%;
+  object-fit: cover;
+  box-shadow: 0.2rem 0.25rem 0 #121d2a;
+}
+
+.header-note,
+.eyebrow,
+.status,
+.art-note {
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.header-note {
+  margin: 0;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid rgba(18, 29, 42, 0.22);
+  border-radius: 999px;
+  color: #37536e;
+  font-size: 0.64rem;
+  font-weight: 800;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(26rem, 1.1fr);
+  align-items: center;
+  flex: 1;
+  gap: clamp(2.5rem, 7vw, 8rem);
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(3rem, 7vh, 7rem) 0 clamp(2rem, 5vh, 4rem);
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 42rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 1.65rem;
+  color: #2d7f78;
+  font-size: 0.68rem;
+  font-weight: 850;
+}
+
+.eyebrow span {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #ef765a;
+  box-shadow: 0.15rem 0.15rem 0 #121d2a;
+}
+
+h1 {
+  max-width: 9ch;
+  margin: 0;
+  color: #121d2a;
+  font-size: clamp(4.5rem, 9.3vw, 9.2rem);
+  font-weight: 800;
+  letter-spacing: -0.095em;
+  line-height: 0.83;
+}
+
+h1 em {
+  color: #214d8b;
+  font-style: normal;
+}
+
+.lede {
+  max-width: 30rem;
+  margin: clamp(2rem, 4vw, 3.5rem) 0 1.1rem;
+  color: #37536e;
+  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+}
+
+.launch-copy {
+  margin: 0 0 1.35rem;
+  color: #617081;
+  font-size: 0.95rem;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.9rem 1.1rem;
+  border: 2px solid #121d2a;
+  border-radius: 999px;
+  background: #121d2a;
+  box-shadow: 0.25rem 0.3rem 0 #ef765a;
+  color: #fffaf0;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.status-dot {
+  width: 0.48rem;
+  height: 0.48rem;
+  border-radius: 50%;
+  background: #f6c235;
+}
+
+.hero-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: min(54vw, 38rem);
+}
+
+.sunwash {
+  position: absolute;
+  width: min(75%, 32rem);
+  aspect-ratio: 1;
+  border-radius: 45% 55% 51% 49% / 48% 43% 57% 52%;
+  background: #f6c235;
+  opacity: 0.95;
+  transform: rotate(-17deg) translate(5%, 2%);
+}
+
+.sunwash::after {
+  position: absolute;
+  right: -1.6rem;
+  bottom: 7%;
+  width: 5.5rem;
+  height: 5.5rem;
+  border: 0.9rem solid #214d8b;
+  border-radius: 50%;
+  content: "";
+  opacity: 0.95;
+}
+
+.icon-frame {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 31rem);
+  padding: clamp(0.7rem, 1.6vw, 1.2rem);
+  border: 2px solid #121d2a;
+  border-radius: clamp(1.7rem, 4vw, 3rem);
+  background: #fffaf0;
+  box-shadow: 0.65rem 0.75rem 0 #121d2a;
+  transform: rotate(4deg);
+}
+
+.icon-frame img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 22%;
+  object-fit: cover;
+}
+
+.art-note {
+  position: absolute;
+  right: 0;
+  bottom: 0.4rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(18, 29, 42, 0.22);
+  border-radius: 999px;
+  background: rgba(246, 240, 229, 0.88);
+  color: #37536e;
+  font-size: 0.6rem;
+  font-weight: 800;
+  transform: rotate(-4deg);
+}
+
+.art-note span {
+  color: #ef765a;
+}
+
+.site-footer {
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid rgba(18, 29, 42, 0.18);
+  padding-top: 1rem;
+  color: #617081;
+  font-size: 0.75rem;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+.site-footer p:last-child {
+  color: #ef765a;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+@media (max-width: 850px) {
+  .site-shell {
+    padding-top: 1.35rem;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    padding-top: clamp(4rem, 10vh, 7rem);
+  }
+
+  h1 {
+    max-width: 10ch;
+    font-size: clamp(4.2rem, 15vw, 7.5rem);
+  }
+
+  .hero-art {
+    min-height: min(80vw, 35rem);
+  }
+
+  .icon-frame {
+    width: min(86%, 29rem);
+  }
+}
+
+@media (max-width: 520px) {
+  .site-shell {
+    padding-right: 1.1rem;
+    padding-left: 1.1rem;
+  }
+
+  .brand {
+    font-size: 0.98rem;
+  }
+
+  .brand-icon {
+    width: 2.35rem;
+  }
+
+  .header-note {
+    padding: 0.48rem 0.65rem;
+    font-size: 0.57rem;
+  }
+
+  .hero {
+    gap: 2.2rem;
+    padding-top: 4.5rem;
+  }
+
+  h1 {
+    font-size: clamp(4rem, 18vw, 6.5rem);
+  }
+
+  .lede {
+    font-size: 1.08rem;
+  }
+
+  .hero-art {
+    min-height: 92vw;
+  }
+
+  .icon-frame {
+    width: 88%;
+    padding: 0.6rem;
+    box-shadow: 0.45rem 0.55rem 0 #121d2a;
+  }
+
+  .art-note {
+    right: -0.2rem;
+    bottom: -0.3rem;
+    max-width: 12rem;
+    text-align: left;
+  }
+
+  .site-footer {
+    margin-top: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
