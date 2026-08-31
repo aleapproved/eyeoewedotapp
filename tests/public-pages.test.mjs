@@ -7,29 +7,48 @@ const read = (relativePath) => readFileSync(resolve(process.cwd(), relativePath)
 const root = read('public/index.html');
 const styles = read('public/styles.css');
 const redirects = read('public/_redirects');
+const themeScript = read('public/theme-toggle.js');
 const deploymentHelper = read('scripts/deploy-public-pages.mjs');
 const deploymentDocs = read('docs/public-pages-deploy.md');
 
 test('publishes one branded, product-only placeholder page', () => {
   assert.match(root, /<!doctype html>/);
-  assert.match(root, /<title>Eye O Ewe — See who owes what<\/title>/);
+  assert.match(root, /<title>Eye O Ewe — Shared expenses, kept simple<\/title>/);
   assert.match(root, /Eye O Ewe/);
-  assert.match(root, /See who<br \/><em>owes what\.<\/em>/);
+  assert.match(root, /Keep it<br \/><em>simple\.<\/em>/);
   assert.match(root, /src="\/eyeoewe-logo\.png"/);
-  assert.match(root, /Eye O Ewe is coming soon/);
+  assert.match(root, /Simple by default/);
+  assert.match(root, /Free forever/);
+  assert.match(root, /Optional one-off unlocks/);
+  assert.match(root, /end-to-end encryption/);
+  assert.match(root, /data-theme-toggle/);
+  assert.match(root, /theme-toggle\.js/);
   assert.doesNotMatch(root, /\bwhat\s+do\s+i\s+owe\s+you\b/i);
   assert.doesNotMatch(root, /privacy|support|delete-account/i);
-  assert.doesNotMatch(root, /<script\b/i);
+  assert.doesNotMatch(root, /Less spreadsheet|Something good is on the way|Keep the big picture/i);
   assert.ok(existsSync(resolve(process.cwd(), 'public/eyeoewe-logo.png')));
   assert.ok(existsSync(resolve(process.cwd(), 'public/styles.css')));
+  assert.ok(existsSync(resolve(process.cwd(), 'public/theme-toggle.js')));
   assert.match(redirects, /^\/eyeoewe\/v1\/\* \/ 301$/m);
   assert.ok(!existsSync(resolve(process.cwd(), 'public/eyeoewe')));
 });
 
 test('keeps the placeholder responsive and respectful of reduced motion', () => {
-  assert.match(styles, /@media \(max-width: 850px\)/);
+  assert.match(styles, /@media \(max-width: 960px\)/);
   assert.match(styles, /@media \(max-width: 520px\)/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
+});
+
+test('provides an accessible persistent light and dark mode switch', () => {
+  assert.match(root, /window\.localStorage\.getItem\(storageKey\)/);
+  assert.match(themeScript, /window\.localStorage\.setItem/);
+  assert.match(themeScript, /addEventListener\("click"/);
+  assert.match(themeScript, /aria-pressed/);
+  assert.match(themeScript, /Switch to light mode/);
+  assert.match(themeScript, /Switch to dark mode/);
+  assert.match(themeScript, /meta\[name="theme-color"\]/);
+  assert.match(styles, /:root\[data-theme="dark"\]/);
+  assert.match(styles, /color-scheme: dark/);
 });
 
 test('deploys only the product public source', () => {
