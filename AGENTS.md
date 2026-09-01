@@ -56,13 +56,23 @@ Production deployment requires all of the following:
 
 - explicit owner approval to publish;
 - the reviewed change merged to `main`;
+- a dedicated clean release checkout, separate from the implementation
+  checkout;
+- the current branch set to `main`, with `HEAD` and
+  `refs/heads/main` at the exact full reviewed SHA supplied to the
+  deployment helper; and
+- no tracked or untracked working-tree changes immediately before deployment;
 - confirmation of the exact Cloudflare account and Pages project; and
-- verification of the resulting Pages deployment and `https://eyeoewe.app/`
-  response.
+- verification of the resulting Pages deployment identifier and URL, selected
+  branch, deployed commit, and `https://eyeoewe.app/` route and status.
 
-Use the deployment commands in `README.md`. They deploy only `public/`, force
-production to the confirmed Pages `main` branch, and require a named non-main
-branch for previews.
+Redact account identifiers, access tokens, and other sensitive deployment
+output from GitHub and repository files.
+
+Use the deployment commands in `README.md`. They deploy only
+`public/`, force production to the confirmed Pages `main`
+branch, require the reviewed SHA and a clean `main` checkout, and
+require a named non-main branch for previews.
 
 ## Stop and ask
 

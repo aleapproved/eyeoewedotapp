@@ -70,15 +70,21 @@ test('deploys only the product public source', () => {
     deploymentHelper,
     /if \(options\.production\) command\.push\('--branch', PRODUCTION_BRANCH\);/,
   );
-  assert.match(deploymentHelper, /Production: --production always targets Pages branch main\./);
+  assert.match(
+    deploymentHelper,
+    /Production: --production requires --commit <full-reviewed-main-sha>/,
+  );
   assert.match(
     deploymentHelper,
     /Preview: --branch <preview-name> must use a branch other than main\./,
   );
   assert.doesNotMatch(deploymentHelper, /--site-root|alessandrogillies/);
+  assert.ok(deploymentHelper.includes("if (options.production) assertProductionSource(options.commit);"));
+  assert.ok(deploymentHelper.includes("if (!/^[0-9a-f]{40}$/i.test(values.commit))"));
+  assert.match(deploymentHelper, /status', '--porcelain=v1', '--untracked-files=all'/);
   assert.match(readme, /complete deployable site is under `public\/`/);
   assert.match(readme, /The public route is:/);
-  assert.ok(!existsSync(resolve(process.cwd(), 'docs')));
+  assert.ok(!existsSync(resolve(process.cwd(), 'docs/public-pages-deploy.md')));
 });
 
 test('targets main only for production and keeps previews on named branches', () => {
@@ -90,7 +96,10 @@ test('targets main only for production and keeps previews on named branches', ()
   assert.match(deploymentHelper, /The production Pages branch is main; use --production/);
   assert.match(deploymentHelper, /function requireOptionValue/);
   assert.match(deploymentHelper, /value\.startsWith\('--'\)/);
-  assert.match(deploymentHelper, /Production: --production always targets Pages branch main\./);
+  assert.match(
+    deploymentHelper,
+    /Production: --production requires --commit <full-reviewed-main-sha>/,
+  );
   assert.match(
     deploymentHelper,
     /Preview: --branch <preview-name> must use a branch other than main\./,
@@ -98,7 +107,13 @@ test('targets main only for production and keeps previews on named branches', ()
   assert.ok(readme.includes('npm run deploy:production'));
   assert.ok(readme.includes('npm run deploy:preview'));
   assert.ok(readme.includes('--branch <named-preview-branch>'));
-  assert.ok(readme.includes('always sends `--branch main`'));
+  assert.match(deploymentHelper, /Production deployment requires --commit/);
+  assert.ok(deploymentHelper.includes('if (branch !== PRODUCTION_BRANCH)'));
+  assert.match(deploymentHelper, /HEAD and local main at reviewed commit/);
+  assert.match(readme, /exact Pages deployment identifier and/);
+  assert.match(readme, /selected branch, deployed commit/);
+  assert.doesNotMatch(readme, /Record the route and status only/);
+  assert.match(readme, /always sends[\s\S]+--branch main/);
 });
 
 test('keeps remote actions behind explicit approval gates', () => {
@@ -107,6 +122,13 @@ test('keeps remote actions behind explicit approval gates', () => {
   assert.match(agents, /merging does not authorise production deployment/);
   assert.match(agents, /deployment does not\s+authorise cleanup/);
   assert.match(readme, /following actions require separate, explicit owner approval/);
+  assert.match(agents, /dedicated clean release checkout/);
+  assert.match(agents, /exact full reviewed SHA supplied to the\s+deployment helper/);
+  assert.match(agents, /deployed commit/);
+  assert.match(agents, /Cloudflare Pages deployment, selected branch and commit, and live response/);
+  assert.match(readme, /exact Pages project must be confirmed in the owner/);
+  assert.match(readme, /Keep the local checkout and remote state separate in status reports/);
+  assert.match(readme, /Redact\s+account identifiers, access tokens/);
   assert.match(readme, /Publish the reviewed `main` commit to Cloudflare Pages/);
   assert.match(readme, /Cleanup is a separate approved action/);
 });

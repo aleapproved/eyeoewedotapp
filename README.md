@@ -71,20 +71,33 @@ npm run deploy:preview -- \
 ### Production
 
 Production requires explicit owner approval after the reviewed change has been
-merged to `main`:
+merged to `main`. Run it from a dedicated clean release checkout,
+separate from the implementation checkout. Immediately before deployment, the
+helper requires all of the following:
+
+- the current directory is the website repository root;
+- the current branch is `main`;
+- `HEAD` and `refs/heads/main` are both the exact full 40-character SHA passed
+  with `--commit`; and
+- the working tree has no tracked or untracked changes.
+
+If any check fails, the Pages deployment is not run.
 
 ```bash
 npm run deploy:production -- \
-  --project-name <confirmed-eyeoewe-pages-project>
+  --project-name <confirmed-eyeoewe-pages-project> \
+  --commit <reviewed-main-sha>
 ```
 
-The deployment helper uploads only `public/` and always sends `--branch main`
-for production. It rejects `--branch main` when a preview is requested.
+The `--commit` value must be the full SHA of the reviewed commit already merged
+to `main`. The deployment helper uploads only `public/` and always sends
+`--branch main` for production. It rejects `--branch main` when a preview is
+requested.
 
-After publishing, verify the exact Pages deployment, its branch and commit,
-and the root URL response. Record the route and status only. Do not put account
-identifiers, access tokens, or other sensitive Wrangler output in GitHub or
-repository files.
+After publishing, verify and report the exact Pages deployment identifier and
+URL, selected branch, deployed commit, and root route and status. Redact
+account identifiers, access tokens, and other sensitive Wrangler output from
+GitHub and repository files.
 
 ## Final tidy state
 
