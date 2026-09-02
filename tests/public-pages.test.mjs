@@ -7,59 +7,49 @@ const read = (relativePath) => readFileSync(resolve(process.cwd(), relativePath)
 const root = read('public/index.html');
 const styles = read('public/styles.css');
 const redirects = read('public/_redirects');
-const themeScript = read('public/theme-toggle.js');
 const deploymentHelper = read('scripts/deploy-public-pages.mjs');
 const readme = read('README.md');
 const agents = read('AGENTS.md');
 
 test('publishes one branded, product-only placeholder page', () => {
   assert.match(root, /<!doctype html>/);
-  assert.match(root, /<title>Eye O Ewe — Shared expenses, kept simple<\/title>/);
+  assert.match(root, /<title>Eye O Ewe — Shared expenses, made simple\.<\/title>/);
   assert.match(root, /Eye O Ewe/);
-  assert.match(root, /class="headline-line">Shared<\/span>/);
-  assert.match(root, /class="headline-line">expenses,[\s\S]*kept simple\./);
-  assert.match(root, /src="\/eyeoewe-logo\.png"/);
-  assert.match(root, /Simple by default/);
-  assert.match(root, /Free forever/);
-  assert.match(root, /Optional one-off unlocks/);
-  assert.match(root, /End-to-end encrypted/);
-  assert.match(root, /Eye O Ewe never sees your private data/);
-  assert.equal((root.match(/Coming soon/g) ?? []).length, 1);
+  assert.match(root, /class="headline-line headline-line--light">Shared expenses,<\/span>/);
+  assert.match(root, /class="headline-line">made simple\.<\/span>/);
+  assert.match(root, /src="\/app-icon\.png"/);
+  assert.match(root, /Simple\. Free\. Encrypted\./);
+  assert.equal((root.match(/Coming soon\./g) ?? []).length, 1);
   assert.doesNotMatch(root, /<footer\b/);
-  assert.match(root, /data-theme-toggle/);
-  assert.match(root, /theme-toggle\.js/);
   assert.doesNotMatch(root, /\bwhat\s+do\s+i\s+owe\s+you\b/i);
   assert.doesNotMatch(root, /privacy|support|delete-account/i);
   assert.doesNotMatch(
     root,
     /Less spreadsheet|Something good is on the way|Keep the big picture|feature maze|attention traps|We['’]re building towards/i,
   );
-  assert.ok(existsSync(resolve(process.cwd(), 'public/eyeoewe-logo.png')));
+  assert.ok(existsSync(resolve(process.cwd(), 'public/app-icon.png')));
   assert.ok(existsSync(resolve(process.cwd(), 'public/styles.css')));
-  assert.ok(existsSync(resolve(process.cwd(), 'public/theme-toggle.js')));
   assert.match(redirects, /^\/eyeoewe\/v1\/\* \/ 301$/m);
   assert.ok(!existsSync(resolve(process.cwd(), 'public/eyeoewe')));
 });
 
 test('keeps the placeholder responsive and respectful of reduced motion', () => {
-  assert.match(styles, /@media \(max-width: 960px\)/);
-  assert.match(styles, /@media \(max-width: 520px\)/);
+  assert.match(styles, /@media \(max-width: 760px\)/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
 });
 
-test('provides an accessible persistent light and dark mode switch', () => {
-  assert.match(root, /window\.localStorage\.getItem\(storageKey\)/);
-  assert.match(themeScript, /window\.localStorage\.setItem/);
-  assert.match(themeScript, /addEventListener\("click"/);
-  assert.match(themeScript, /aria-pressed/);
-  assert.match(themeScript, /Switch to light mode/);
-  assert.match(themeScript, /Switch to dark mode/);
-  assert.match(themeScript, /meta\[name="theme-color"\]/);
-  assert.match(styles, /:root\[data-theme="dark"\]/);
-  assert.match(styles, /color-scheme: dark/);
-  assert.doesNotMatch(root, /sunwash/);
-  assert.doesNotMatch(styles, /\.sunwash/);
-  assert.doesNotMatch(styles, /\.site-footer/);
+test('keeps the landing page light and focused on the supplied composition', () => {
+  assert.match(root, /meta name="color-scheme" content="light"/);
+  assert.match(root, /rel="icon" href="\/app-icon\.png"/);
+  assert.match(styles, /--canvas: #fbf4ee/);
+  assert.match(styles, /font-family:\s*Inter/);
+  assert.match(styles, /\.brand-mark\s*\{[\s\S]*?border-radius: 50%;/);
+  assert.match(styles, /\.headline-line--light\s*\{[\s\S]*font-weight: 400/);
+  assert.doesNotMatch(root, /status-dot/);
+  assert.doesNotMatch(styles, /\.status-dot/);
+  assert.doesNotMatch(root, /data-theme-toggle|theme-toggle\.js/);
+  assert.doesNotMatch(root, /principles|Simple by default|Free forever/);
+  assert.doesNotMatch(styles, /\.theme-toggle|\.principle|:root\[data-theme="dark"\]/);
 });
 
 test('deploys only the product public source', () => {
