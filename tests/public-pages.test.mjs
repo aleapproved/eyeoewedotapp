@@ -4,121 +4,112 @@ import { test } from 'node:test';
 import { resolve } from 'node:path';
 
 const read = (relativePath) => readFileSync(resolve(process.cwd(), relativePath), 'utf8');
+const exists = (relativePath) => existsSync(resolve(process.cwd(), relativePath));
 const root = read('public/index.html');
+const body = root.slice(root.indexOf('<body>'), root.indexOf('</body>'));
+const bodyText = body.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 const styles = read('public/styles.css');
 const redirects = read('public/_redirects');
-const deploymentHelper = read('scripts/deploy-public-pages.mjs');
+const headers = read('public/_headers');
+const workflow = read('.github/workflows/ci.yml');
 const readme = read('README.md');
 const agents = read('AGENTS.md');
 
-test('publishes one branded, product-only placeholder page', () => {
+test('publishes one branded, intentionally minimal placeholder page', () => {
   assert.match(root, /<!doctype html>/);
   assert.match(root, /<title>Eye O Ewe — Shared expenses, made simple\.<\/title>/);
-  assert.match(root, /Eye O Ewe/);
-  assert.match(root, /class="headline-line headline-line--light">Shared expenses,<\/span>/);
-  assert.match(root, /class="headline-line">made simple\.<\/span>/);
-  assert.match(root, /src="\/app-icon\.png"/);
-  assert.match(root, /Simple\. Free\. Encrypted\./);
-  assert.equal((root.match(/Coming soon\./g) ?? []).length, 1);
-  assert.doesNotMatch(root, /<footer\b/);
-  assert.doesNotMatch(root, /\bwhat\s+do\s+i\s+owe\s+you\b/i);
-  assert.doesNotMatch(root, /privacy|support|delete-account/i);
+  assert.match(bodyText, /Eye O Ewe/);
+  assert.match(bodyText, /Shared expenses, made simple\./);
+  assert.match(bodyText, /Simple\. Free\. Encrypted\./);
+  assert.match(bodyText, /Coming soon\./);
+  assert.match(root, /src="\/app-icon\.webp"/);
+  assert.match(root, /<img class="brand-mark" src="\/app-icon\.webp"[^>]+width="44"[^>]+height="44"/);
+  assert.match(root, /href="\/favicon\.png"/);
+  assert.match(root, /<link rel="icon" type="image\/png" sizes="64x64" href="\/favicon\.png"/);
+  assert.match(root, /og:image.*social-preview\.jpg/);
+  assert.match(root, /twitter:image.*social-preview\.jpg/);
+  assert.equal((bodyText.match(/Coming soon\./g) ?? []).length, 1);
+  assert.doesNotMatch(root, /<footer\b|<nav\b|<form\b|<button\b|<input\b/);
+  assert.doesNotMatch(root, /<script\b|theme-toggle|data-theme|color-scheme="dark"/);
+  assert.doesNotMatch(root, /privacy|support|delete-account|what\s+do\s+i\s+owe\s+you/i);
   assert.doesNotMatch(
     root,
-    /Less spreadsheet|Something good is on the way|Keep the big picture|feature maze|attention traps|We['’]re building towards/i,
+    /Free forever|Optional one-off unlocks|End-to-end encrypted|feature grid|signup|store badge/i,
   );
-  assert.ok(existsSync(resolve(process.cwd(), 'public/app-icon.png')));
-  assert.ok(existsSync(resolve(process.cwd(), 'public/styles.css')));
-  assert.match(redirects, /^\/eyeoewe\/v1\/\* \/ 301$/m);
-  assert.ok(!existsSync(resolve(process.cwd(), 'public/eyeoewe')));
+  assert.ok(exists('public/app-icon.png'));
+  assert.ok(exists('public/app-icon.webp'));
+  assert.ok(exists('public/social-preview.jpg'));
+  assert.ok(exists('public/favicon.png'));
+  assert.ok(exists('public/styles.css'));
+  assert.ok(!exists('public/eyeoewe-logo.png'));
+  assert.ok(!exists('public/theme-toggle.js'));
+  assert.match(redirects, /^\/eyeoewe\/v1\/\* \/ 302$/m);
+  assert.ok(!exists('public/eyeoewe'));
 });
 
-test('keeps the placeholder responsive and respectful of reduced motion', () => {
-  assert.match(styles, /@media \(max-width: 760px\)/);
+test('uses the mobile app visual language with responsive, accessible styling', () => {
+  for (const color of [
+    '#FAF8F6',
+    '#FDFCFB',
+    '#072240',
+    '#5A6674',
+    '#87919B',
+    '#EDEBEA',
+    '#D3D0CD',
+    '#E7B43A',
+  ]) {
+    assert.match(styles, new RegExp(color));
+  }
+  assert.match(styles, /Georgia, "Times New Roman", serif/);
+  assert.match(styles, /\.brand:focus-visible/);
+  assert.match(styles, /@media \(max-width: 820px\)/);
+  assert.match(styles, /@media \(max-width: 420px\)/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.match(styles, /box-shadow: 0 18px 40px/);
 });
 
-test('keeps the landing page light and focused on the supplied composition', () => {
-  assert.match(root, /meta name="color-scheme" content="light"/);
-  assert.match(root, /rel="icon" href="\/app-icon\.png"/);
-  assert.match(styles, /--canvas: #fbf4ee/);
-  assert.match(styles, /font-family:\s*Inter/);
-  assert.match(styles, /\.brand-mark\s*\{[\s\S]*?border-radius: 50%;/);
-  assert.match(styles, /\.headline-line--light\s*\{[\s\S]*font-weight: 400/);
-  assert.doesNotMatch(root, /status-dot/);
-  assert.doesNotMatch(styles, /\.status-dot/);
-  assert.doesNotMatch(root, /data-theme-toggle|theme-toggle\.js/);
-  assert.doesNotMatch(root, /principles|Simple by default|Free forever/);
-  assert.doesNotMatch(styles, /\.theme-toggle|\.principle|:root\[data-theme="dark"\]/);
+test('serves restrictive headers compatible with this static page', () => {
+  assert.match(headers, /Content-Security-Policy:/);
+  for (const directive of [
+    "default-src 'self'",
+    "base-uri 'none'",
+    "frame-ancestors 'none'",
+    "form-action 'none'",
+    "img-src 'self'",
+    "style-src 'self'",
+    "script-src 'none'",
+    "connect-src 'none'",
+    "font-src 'none'",
+    "object-src 'none'",
+    "media-src 'none'",
+  ]) {
+    assert.ok(headers.includes(directive), "missing header directive: " + directive);
+  }
+  assert.doesNotMatch(headers, /unsafe-inline|unsafe-eval|https?:\/\//);
+  assert.match(headers, /Permissions-Policy:/);
+  assert.match(headers, /Referrer-Policy: no-referrer/);
+  assert.match(headers, /X-Content-Type-Options: nosniff/);
+  assert.match(headers, /X-Frame-Options: DENY/);
 });
 
-test('deploys only the product public source', () => {
-  assert.match(deploymentHelper, /const publicRoot = join\(root, 'public'\);/);
-  assert.match(deploymentHelper, /cpSync\(publicRoot, stagingRoot/);
-  assert.match(deploymentHelper, /const PRODUCTION_BRANCH = 'main';/);
-  assert.match(
-    deploymentHelper,
-    /if \(options\.production\) command\.push\('--branch', PRODUCTION_BRANCH\);/,
-  );
-  assert.match(
-    deploymentHelper,
-    /Production: --production requires --commit <full-reviewed-main-sha>/,
-  );
-  assert.match(
-    deploymentHelper,
-    /Preview: --branch <preview-name> must use a branch other than main\./,
-  );
-  assert.doesNotMatch(deploymentHelper, /--site-root|alessandrogillies/);
-  assert.ok(deploymentHelper.includes("if (options.production) assertProductionSource(options.commit);"));
-  assert.ok(deploymentHelper.includes("if (!/^[0-9a-f]{40}$/i.test(values.commit))"));
-  assert.match(deploymentHelper, /status', '--porcelain=v1', '--untracked-files=all'/);
-  assert.match(readme, /complete deployable site is under `public\/`/);
-  assert.match(readme, /The public route is:/);
-  assert.ok(!existsSync(resolve(process.cwd(), 'docs/public-pages-deploy.md')));
+test('defines the minimal PR and main CI workflow', () => {
+  assert.match(workflow, /^name: CI$/m);
+  assert.match(workflow, /pull_request:[\s\S]*branches:[\s\S]*- main/);
+  assert.match(workflow, /push:[\s\S]*branches:[\s\S]*- main/);
+  assert.match(workflow, /permissions:\s*\n\s+contents: read/);
+  assert.match(workflow, /node-version: 20/);
+  assert.match(workflow, /run: npm ci/);
+  assert.match(workflow, /run: npm test/);
+  assert.match(workflow, /run: node --check scripts\/deploy-public-pages\.mjs/);
+  assert.match(workflow, /name: Test website/);
 });
 
-test('targets main only for production and keeps previews on named branches', () => {
-  assert.match(deploymentHelper, /const PRODUCTION_BRANCH = 'main';/);
-  assert.match(
-    deploymentHelper,
-    /if \(options\.production\) command\.push\('--branch', PRODUCTION_BRANCH\);\s*else command\.push\('--branch', options\.branch\);/,
-  );
-  assert.match(deploymentHelper, /The production Pages branch is main; use --production/);
-  assert.match(deploymentHelper, /function requireOptionValue/);
-  assert.match(deploymentHelper, /value\.startsWith\('--'\)/);
-  assert.match(
-    deploymentHelper,
-    /Production: --production requires --commit <full-reviewed-main-sha>/,
-  );
-  assert.match(
-    deploymentHelper,
-    /Preview: --branch <preview-name> must use a branch other than main\./,
-  );
-  assert.ok(readme.includes('npm run deploy:production'));
-  assert.ok(readme.includes('npm run deploy:preview'));
-  assert.ok(readme.includes('--branch <named-preview-branch>'));
-  assert.match(deploymentHelper, /Production deployment requires --commit/);
-  assert.ok(deploymentHelper.includes('if (branch !== PRODUCTION_BRANCH)'));
-  assert.match(deploymentHelper, /HEAD and local main at reviewed commit/);
-  assert.match(readme, /exact Pages deployment identifier and/);
-  assert.match(readme, /selected branch, deployed commit/);
-  assert.doesNotMatch(readme, /Record the route and status only/);
-  assert.match(readme, /always sends[\s\S]+--branch main/);
-});
-
-test('keeps remote actions behind explicit approval gates', () => {
-  assert.match(agents, /An implementation request authorises local work only/);
-  assert.match(agents, /pushing a branch or creating or updating a pull request/);
-  assert.match(agents, /merging does not authorise production deployment/);
-  assert.match(agents, /deployment does not\s+authorise cleanup/);
+test('documents the remote-main production source guarantee and approval boundary', () => {
+  assert.match(readme, /read-only .*git ls-remote.*origin\/main/);
+  assert.match(readme, /unavailable or mismatched .*origin\/main/);
   assert.match(readme, /following actions require separate, explicit owner approval/);
-  assert.match(agents, /dedicated clean release checkout/);
-  assert.match(agents, /exact full reviewed SHA supplied to the\s+deployment helper/);
-  assert.match(agents, /deployed commit/);
-  assert.match(agents, /Cloudflare Pages deployment, selected branch and commit, and live response/);
-  assert.match(readme, /exact Pages project must be confirmed in the owner/);
-  assert.match(readme, /Keep the local checkout and remote state separate in status reports/);
-  assert.match(readme, /Redact\s+account identifiers, access tokens/);
-  assert.match(readme, /Publish the reviewed `main` commit to Cloudflare Pages/);
   assert.match(readme, /Cleanup is a separate approved action/);
+  assert.match(agents, /read-only remote check proving .*origin\/main/);
+  assert.match(agents, /An implementation request authorises local work only/);
+  assert.match(agents, /deployment does not\s+authorise cleanup/);
 });

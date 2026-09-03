@@ -79,9 +79,11 @@ helper requires all of the following:
 - the current branch is `main`;
 - `HEAD` and `refs/heads/main` are both the exact full 40-character SHA passed
   with `--commit`; and
+- a read-only `git ls-remote` check resolves `origin/main` to that same SHA;
 - the working tree has no tracked or untracked changes.
 
-If any check fails, the Pages deployment is not run.
+If any check fails, including an unavailable or mismatched `origin/main`, the
+Pages deployment is not run.
 
 ```bash
 npm run deploy:production -- \
