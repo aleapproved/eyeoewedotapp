@@ -1,2 +1,2 @@
-# The placeholder is intentionally the only public page.
-/eyeoewe/v1/* / 301
+# The placeholder is intentionally the only public page while these routes are reserved.
+/eyeoewe/v1/* / 302

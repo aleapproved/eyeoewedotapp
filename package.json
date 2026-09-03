@@ -7,7 +7,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node --test tests/public-pages.test.mjs",
+    "test": "node --test tests/*.test.mjs",
     "deploy:preview": "node scripts/deploy-public-pages.mjs",
     "deploy:production": "node scripts/deploy-public-pages.mjs --production"
   }

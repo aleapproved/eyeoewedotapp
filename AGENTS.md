@@ -61,6 +61,7 @@ Production deployment requires all of the following:
 - the current branch set to `main`, with `HEAD` and
   `refs/heads/main` at the exact full reviewed SHA supplied to the
   deployment helper; and
+- a read-only remote check proving `origin/main` is at that exact SHA; and
 - no tracked or untracked working-tree changes immediately before deployment;
 - confirmation of the exact Cloudflare account and Pages project; and
 - verification of the resulting Pages deployment identifier and URL, selected
