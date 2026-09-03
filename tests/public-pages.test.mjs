@@ -23,7 +23,9 @@ test('publishes one branded, intentionally minimal placeholder page', () => {
   assert.match(bodyText, /Simple\. Free\. Encrypted\./);
   assert.match(bodyText, /Coming soon\./);
   assert.match(root, /src="\/app-icon\.webp"/);
+  assert.match(root, /<img class="brand-mark" src="\/app-icon\.webp"[^>]+width="44"[^>]+height="44"/);
   assert.match(root, /href="\/favicon\.png"/);
+  assert.match(root, /<link rel="icon" type="image\/png" sizes="64x64" href="\/favicon\.png"/);
   assert.match(root, /og:image.*social-preview\.jpg/);
   assert.match(root, /twitter:image.*social-preview\.jpg/);
   assert.equal((bodyText.match(/Coming soon\./g) ?? []).length, 1);

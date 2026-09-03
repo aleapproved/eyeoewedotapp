@@ -1,3 +1,7 @@
+import { spawnSync } from 'node:child_process';
+import { chmodSync, existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import {
@@ -40,6 +44,44 @@ function sourceError(overrides = {}) {
 
 test('rejects a production source from the wrong branch', () => {
   assert.match(sourceError({ branch: 'codex/website-visual-hardening' }), /requires the main branch/);
+});
+
+test('does not invoke npx when production source validation fails', () => {
+  const fakeBin = mkdtempSync(join(tmpdir(), 'eyeoewe-npx-test-'));
+  const marker = join(fakeBin, 'npx-invoked');
+  const fakeNpx = join(fakeBin, 'npx');
+  writeFileSync(fakeNpx, '#!/bin/sh\n: > "$EYEOWE_NPX_MARKER"\n');
+  chmodSync(fakeNpx, 0o755);
+
+  try {
+    const result = spawnSync(
+      process.execPath,
+      [
+        resolve(process.cwd(), 'scripts/deploy-public-pages.mjs'),
+        '--project-name',
+        'eyeoewe',
+        '--production',
+        '--commit',
+        reviewedSha,
+      ],
+      {
+        cwd: process.cwd(),
+        encoding: 'utf8',
+        env: {
+          ...process.env,
+          EYEOWE_NPX_MARKER: marker,
+          PATH: fakeBin + ':' + (process.env.PATH ?? ''),
+        },
+      },
+    );
+
+    assert.equal(result.error, undefined);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /Public page deployment not run: Production deployment requires/);
+    assert.equal(existsSync(marker), false);
+  } finally {
+    rmSync(fakeBin, { recursive: true, force: true });
+  }
 });
 
 test('rejects a production source outside the website repository root', () => {
