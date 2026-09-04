@@ -24,12 +24,15 @@ test('publishes one branded, intentionally minimal placeholder page', () => {
   assert.match(bodyText, /Coming soon\./);
   assert.match(root, /src="\/app-icon\.webp"/);
   assert.match(root, /<img class="brand-mark" src="\/app-icon\.webp"[^>]+width="44"[^>]+height="44"/);
+  assert.equal((root.match(/src="\/app-icon\.webp"/g) ?? []).length, 1);
   assert.match(root, /href="\/favicon\.png"/);
   assert.match(root, /<link rel="icon" type="image\/png" sizes="64x64" href="\/favicon\.png"/);
   assert.match(root, /og:image.*social-preview\.jpg/);
   assert.match(root, /twitter:image.*social-preview\.jpg/);
   assert.equal((bodyText.match(/Coming soon\./g) ?? []).length, 1);
   assert.doesNotMatch(root, /<footer\b|<nav\b|<form\b|<button\b|<input\b/);
+  assert.doesNotMatch(root, /hero-visual/);
+  assert.doesNotMatch(root, /status-dot/);
   assert.doesNotMatch(root, /<script\b|theme-toggle|data-theme|color-scheme="dark"/);
   assert.doesNotMatch(root, /privacy|support|delete-account|what\s+do\s+i\s+owe\s+you/i);
   assert.doesNotMatch(
@@ -65,7 +68,8 @@ test('uses the mobile app visual language with responsive, accessible styling', 
   assert.match(styles, /@media \(max-width: 820px\)/);
   assert.match(styles, /@media \(max-width: 420px\)/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
-  assert.match(styles, /box-shadow: 0 18px 40px/);
+  assert.doesNotMatch(styles, /\.hero-visual/);
+  assert.doesNotMatch(styles, /\.status-dot/);
 });
 
 test('serves restrictive headers compatible with this static page', () => {
