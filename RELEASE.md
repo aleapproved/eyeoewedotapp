@@ -71,7 +71,7 @@ command, all of these must be true:
 - `HEAD` and `refs/heads/main` equal the supplied full 40-character reviewed
   SHA;
 - a read-only `git ls-remote` check resolves `origin/main` to that same SHA;
-- the checkout has no tracked or untracked changes; and
+- the checkout has no tracked or non-ignored untracked changes; and
 - the intended source is the reviewed `public/` tree.
 
 Use the confirmed project name and reviewed full SHA:

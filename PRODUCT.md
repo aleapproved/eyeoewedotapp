@@ -25,6 +25,8 @@ The homepage also has no:
 - dark mode or theme toggle; or
 - additional marketing sections.
 
-The listed copy is the complete current public messaging boundary. Adding
-public claims, pages, collection mechanisms, or product surfaces requires a
-separate product-owner decision.
+The four strings above are the complete current visible/on-page messaging
+boundary. Document metadata may restate approved product positioning, but it
+does not authorise additional visible marketing copy. Adding public claims,
+pages, collection mechanisms, or product surfaces requires a separate
+product-owner decision.

@@ -1,6 +1,8 @@
 node_modules/
 coverage/
 .DS_Store
+# KDE desktop metadata
+.directory
 .env
 .env.*
 !.env.example
