@@ -158,7 +158,7 @@ export function productionSourceError(
   const status = git(['status', '--porcelain=v1', '--untracked-files=all']);
   if (status === null) return 'Production deployment could not inspect the working tree.';
   if (status.length > 0)
-    return 'Production deployment requires a clean checkout with no tracked or untracked changes.';
+    return 'Production deployment requires a clean checkout with no tracked or non-ignored untracked changes.';
 
   return null;
 }

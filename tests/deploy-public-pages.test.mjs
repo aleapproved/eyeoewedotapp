@@ -121,14 +121,14 @@ test('rejects an unavailable remote main', () => {
 test('rejects tracked working-tree changes', () => {
   assert.match(
     sourceError({ status: ' M public/index.html' }),
-    /clean checkout with no tracked or untracked changes/,
+    /clean checkout with no tracked or non-ignored untracked changes/,
   );
 });
 
 test('rejects untracked files', () => {
   assert.match(
     sourceError({ status: '?? temporary-preview.html' }),
-    /clean checkout with no tracked or untracked changes/,
+    /clean checkout with no tracked or non-ignored untracked changes/,
   );
 });
 

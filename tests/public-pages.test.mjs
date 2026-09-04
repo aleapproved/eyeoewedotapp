@@ -14,6 +14,12 @@ const headers = read('public/_headers');
 const workflow = read('.github/workflows/ci.yml');
 const readme = read('README.md');
 const agents = read('AGENTS.md');
+const product = read('PRODUCT.md');
+const architecture = read('ARCHITECTURE.md');
+const contributing = read('CONTRIBUTING.md');
+const release = read('RELEASE.md');
+const pullRequestTemplate = read('.github/pull_request_template.md');
+const gitignore = read('.gitignore');
 
 test('publishes one branded, intentionally minimal placeholder page', () => {
   assert.match(root, /<!doctype html>/);
@@ -108,12 +114,75 @@ test('defines the minimal PR and main CI workflow', () => {
   assert.match(workflow, /name: Test website/);
 });
 
-test('documents the remote-main production source guarantee and approval boundary', () => {
-  assert.match(readme, /read-only .*git ls-remote.*origin\/main/);
-  assert.match(readme, /unavailable or mismatched .*origin\/main/);
-  assert.match(readme, /following actions require separate, explicit owner approval/);
-  assert.match(readme, /Cleanup is a separate approved action/);
-  assert.match(agents, /read-only remote check proving .*origin\/main/);
-  assert.match(agents, /An implementation request authorises local work only/);
-  assert.match(agents, /deployment does not\s+authorise cleanup/);
+test('defines the durable website documentation model and product boundary', () => {
+  for (const document of [
+    'README.md',
+    'PRODUCT.md',
+    'ARCHITECTURE.md',
+    'CONTRIBUTING.md',
+    'RELEASE.md',
+    'AGENTS.md',
+    '.github/pull_request_template.md',
+  ]) {
+    assert.ok(exists(document), `missing workflow document: ${document}`);
+  }
+  assert.match(readme, /\[PRODUCT\.md\]\(PRODUCT\.md\)/);
+  assert.match(readme, /\[ARCHITECTURE\.md\]\(ARCHITECTURE\.md\)/);
+  assert.match(readme, /\[CONTRIBUTING\.md\]\(CONTRIBUTING\.md\)/);
+  assert.match(readme, /\[RELEASE\.md\]\(RELEASE\.md\)/);
+  for (const copy of [
+    'Eye O Ewe',
+    'Shared expenses, made simple\\.',
+    'Simple\\. Free\\. Encrypted\\.',
+    'Coming soon\\.',
+  ]) {
+    assert.match(product, new RegExp(copy));
+  }
+  assert.match(product, /no navigation/);
+  assert.match(product, /no policy, legal, support, or\s+account-deletion content/);
+  assert.match(product, /analytics or tracking/);
+  assert.match(architecture, /static website/);
+  assert.match(architecture, /All deployable source lives under\s+`public\/`/);
+  assert.match(architecture, /no framework or application build system/);
+  assert.match(architecture, /no backend, account data, runtime application code, or\s+tracking/);
+});
+
+test('documents the fetched origin/main task-base and reconciliation rule', () => {
+  assert.match(contributing, /git fetch origin/);
+  assert.match(contributing, /git rev-parse --verify refs\/remotes\/origin\/main/);
+  assert.match(contributing, /git worktree add -b codex\/\<short-slug\>/);
+  assert.match(contributing, /Never start from local `main`/);
+  assert.match(contributing, /If the fetch or\s+the `origin\/main` resolution fails, stop/);
+  assert.match(contributing, /rebase an unpublished branch onto the new `origin\/main`/);
+  assert.match(contributing, /Do not force-push without separate owner approval/);
+  assert.match(contributing, /PR branch must be up to date with\s+protected `main`/);
+  assert.match(agents, /Before creating a task branch or worktree, fetch `origin`/);
+  assert.match(agents, /Never use local `main`\s+as a substitute/);
+  assert.match(agents, /If `origin\/main` cannot be read, stop/);
+});
+
+test('documents automatic Pages publication, guarded manual recovery, and evidence boundaries', () => {
+  assert.match(release, /automatically\s+deploys the production site when `main` changes/);
+  assert.match(release, /Merge to `main`[\s\S]*triggers the Pages production deployment/);
+  assert.match(release, /authorization for the public release/);
+  assert.match(release, /no second post-merge production approval/);
+  assert.match(release, /manual Wrangler production helper as a routine second release step/);
+  assert.match(release, /git ls-remote/);
+  assert.match(release, /dedicated clean release\s+checkout/);
+  assert.match(release, /https:\/\/eyeoewe\.app\//);
+  assert.match(release, /security headers defined in `public\/_headers`/);
+  assert.match(release, /reserved `\/eyeoewe\/v1\/\.\.\.` route/);
+  assert.match(architecture, /manual Wrangler helper is retained for recovery/);
+  assert.match(architecture, /not an equivalent normal release\s+path/);
+  assert.doesNotMatch(readme, /following actions require separate, explicit owner approval/);
+});
+
+test('keeps the PR template and local tooling boundary lightweight', () => {
+  for (const heading of ['Summary', 'Scope and safety', 'Verification', 'Review']) {
+    assert.match(pullRequestTemplate, new RegExp(`^## ${heading}$`, 'm'));
+  }
+  for (const field of ['Linked issue', 'Outcome', 'Task base SHA', 'Local tests', 'Browser or visual review', 'Hosted or deployment boundary', 'Unavailable checks', 'Exact reviewed commit', 'Findings or blockers']) {
+    assert.match(pullRequestTemplate, new RegExp(`- ${field}:`));
+  }
+  assert.match(gitignore, /^\.wrangler\/$/m);
 });

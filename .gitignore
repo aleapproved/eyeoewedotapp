@@ -1,7 +1,11 @@
 node_modules/
 coverage/
 .DS_Store
+# KDE desktop metadata
+.directory
 .env
 .env.*
 !.env.example
 .pages-staging/
+# Wrangler local cache and account metadata
+.wrangler/
