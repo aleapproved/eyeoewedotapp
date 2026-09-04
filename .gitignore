@@ -5,3 +5,5 @@ coverage/
 .env.*
 !.env.example
 .pages-staging/
+# Wrangler local cache and account metadata
+.wrangler/
