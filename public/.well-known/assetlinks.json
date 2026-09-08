@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.eyeoewe",
+      "sha256_cert_fingerprints": [
+        "56:57:AA:0C:8D:0C:2E:48:07:4B:AF:AB:99:14:9D:2B:87:59:4D:53:19:09:A2:C4:BB:3E:4A:1E:70:37:7A:BA"
+      ]
+    }
+  }
+]

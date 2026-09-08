@@ -11,6 +11,8 @@ const bodyText = body.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 const styles = read('public/styles.css');
 const redirects = read('public/_redirects');
 const headers = read('public/_headers');
+const assetLinksText = read('public/.well-known/assetlinks.json');
+const assetLinks = JSON.parse(assetLinksText);
 const workflow = read('.github/workflows/ci.yml');
 const readme = read('README.md');
 const agents = read('AGENTS.md');
@@ -20,6 +22,22 @@ const contributing = read('CONTRIBUTING.md');
 const release = read('RELEASE.md');
 const pullRequestTemplate = read('.github/pull_request_template.md');
 const gitignore = read('.gitignore');
+const playAppSigningSha256 =
+  '56:57:AA:0C:8D:0C:2E:48:07:4B:AF:AB:99:14:9D:2B:87:59:4D:53:19:09:A2:C4:BB:3E:4A:1E:70:37:7A:BA';
+
+function redirectSourceMatches(source, path) {
+  const pattern = source
+    .split('*')
+    .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('.*');
+  return new RegExp(`^${pattern}$`).test(path);
+}
+
+const redirectSources = redirects
+  .split(/\r?\n/)
+  .map((line) => line.trim())
+  .filter((line) => line.length > 0 && !line.startsWith('#'))
+  .map((line) => line.split(/\s+/)[0]);
 
 test('publishes one branded, intentionally minimal placeholder page', () => {
   assert.match(root, /<!doctype html>/);
@@ -54,6 +72,38 @@ test('publishes one branded, intentionally minimal placeholder page', () => {
   assert.ok(!exists('public/theme-toggle.js'));
   assert.match(redirects, /^\/eyeoewe\/v1\/\* \/ 302$/m);
   assert.ok(!exists('public/eyeoewe'));
+});
+
+test('publishes the exact Play App Signing Digital Asset Links statement', () => {
+  assert.ok(exists('public/.well-known/assetlinks.json'));
+  assert.doesNotMatch(assetLinksText, /<html\b|Coming soon/i);
+  assert.ok(Array.isArray(assetLinks));
+  assert.equal(assetLinks.length, 1);
+  assert.deepEqual(assetLinks[0], {
+    relation: ['delegate_permission/common.handle_all_urls'],
+    target: {
+      namespace: 'android_app',
+      package_name: 'app.eyeoewe',
+      sha256_cert_fingerprints: [playAppSigningSha256],
+    },
+  });
+  assert.match(playAppSigningSha256, /^(?:[0-9A-F]{2}:){31}[0-9A-F]{2}$/);
+});
+
+test('keeps the Asset Links and invite routes outside configured redirects', () => {
+  assert.equal(
+    redirectSources.some((source) =>
+      redirectSourceMatches(source, '/.well-known/assetlinks.json'),
+    ),
+    false,
+  );
+  assert.equal(
+    redirectSources.some((source) => redirectSourceMatches(source, '/join/example-secret')),
+    false,
+  );
+  assert.match(headers, /^\/\*$/m);
+  assert.match(headers, /^\/\.well-known\/assetlinks\.json$/m);
+  assert.match(headers, /Content-Type: application\/json/);
 });
 
 test('uses the mobile app visual language with responsive, accessible styling', () => {
